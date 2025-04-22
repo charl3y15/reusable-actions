@@ -1,17 +1,10 @@
 {
   "autodiscover": false,
   "automerge": true,
-  "baseBranches": [
-    "main"
-  ],
+  "baseBranches": ["main"],
   "commitMessagePrefix": "chore(deps): ",
-  "extends": [
-    "config:recommended",
-    ":dependencyDashboard"
-  ],
-  "labels": [
-    "automated"
-  ],
+  "extends": ["config:recommended", ":dependencyDashboard"],
+  "labels": ["automated"],
   "major": {
     "automerge": true
   },
@@ -21,13 +14,7 @@
   "packageRules": [
     {
       "automerge": true,
-      "matchUpdateTypes": [
-        "major",
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ]
+      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest"]
     }
   ],
   "patch": {
