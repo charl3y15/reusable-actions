@@ -1,0 +1,149 @@
+name: Update Docker
+
+on:
+  push:
+    branches: ["main"]
+    paths-ignore:
+      - "archive/**"
+      - "README.md"
+      - "old/**"
+      - "*.pdf"
+      - "logs/**"
+      - ".fdk/**"
+      - "*.md"
+      - "*ignore"
+      - "*.log"
+      - "*.zip"
+      - ".vscode/**"
+      - "*.vs/**"
+      - "test/**"
+      - "*.ps1"
+      - ".venv/**"
+      - "offboarding/**"
+      - ".gitignore"
+      - ".gitattributes"
+      - "getTicketDetails.py"
+      - ".env"
+      - "1"
+      - "processOffboard.py"
+      - "Logs/**"
+      - "Scripts/**"
+      - "Archive/**"
+      - "tests/**"
+      - "node.js.yml"
+      - ".idea/**"
+      - ".github/**"
+      - ".prettierignore"
+      - ".prettierrc"
+      - ".pytest_cache/**"
+  pull_request:
+    branches: ["main"]
+    paths-ignore:
+      - "archive/**"
+      - "README.md"
+      - "old/**"
+      - "*.pdf"
+      - "logs/**"
+      - ".fdk/**"
+      - "*.md"
+      - "*ignore"
+      - "*.log"
+      - "*.zip"
+      - ".vscode/**"
+      - "*.vs/**"
+      - "test/**"
+      - "*.ps1"
+      - ".venv/**"
+      - "offboarding/**"
+      - ".gitignore"
+      - ".gitattributes"
+      - "getTicketDetails.py"
+      - ".env"
+      - "1"
+      - "processOffboard.py"
+      - "Logs/**"
+      - "Scripts/**"
+      - "Archive/**"
+      - "tests/**"
+      - "node.js.yml"
+      - ".idea/**"
+      - ".github/**"
+      - ".prettierignore"
+      - ".prettierrc"
+      - ".pytest_cache/**"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Set up Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: "20"  # Explicitly use Node.js 20
+          check-latest: true
+
+      # Cache npm dependencies
+      - name: Cache npm dependencies
+        uses: actions/cache@v4.2.0  # Ensure you use the latest version of cache action
+        id: npm-cache
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Install Prettier and run it
+      - name: Install Prettier
+        run: npm install --save-dev --save-exact prettier
+
+      - name: Run Prettier
+        run: npx prettier . --write
+
+      # Set up Python environment
+      - name: Setup Python
+        uses: actions/setup-python@v5.3.0  # Latest version of setup-python action
+        with:
+          python-version: "3.x"
+
+      # Cache pip dependencies
+      - name: Cache pip dependencies
+        uses: actions/cache@v4.2.0  # Ensure you use the latest version of cache action
+        id: pip-cache
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Python Black
+      - name: Run Python Black
+        uses: piotrpawlaczek/python-blacken@v24.4.2
+        with:
+          line-length: '88'
+          path: '.'
+          sanity-check: 'safe'
+          only-check: 'no'
+
+      # Continue with existing steps
+      - name: Login to Docker Registry
+        run: echo ${{ secrets.GH_TOKEN }} | docker login ghcr.io -u ${{ secrets.GH_USERNAME }} --password-stdin
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag ${{ secrets.GH_REPO }}:latest
+
+      - name: Tag Docker Image
+        run: docker tag ${{ secrets.GH_REPO }}:latest ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO }}/${{ secrets.GH_REPO }}:latest
+
+      - name: Push Docker Image
+        run: docker push ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO }}/${{ secrets.GH_REPO }}:latest
+
+      - name: Logout from Docker Registry
+        run: docker logout ghcr.io

@@ -1,0 +1,70 @@
+name: Update Node Packages
+
+on:
+  schedule:
+    - cron: "0 0 * * 1" # Runs weekly on Monday at midnight
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  check-and-update-packages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: "20" # Specify the Node.js version
+
+      - name: Cache node modules
+        uses: actions/cache@v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install npm-check-updates
+        run: npm install -g npm-check-updates
+
+      - name: Check for Updates
+        run: |
+          ncu -u # Updates the package.json with the latest versions
+          npm install > /dev/null 2>&1 # Suppresses funding and vulnerability messages
+
+      - name: Check if there are changes
+        id: check_changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "::set-output name=changes::true"
+          else
+            echo "::set-output name=changes::false"
+          fi
+
+      - name: Commit and Push Updates
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git commit -m "Update Node packages"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Create Pull Request
+        if: steps.check_changes.outputs.changes == 'true'
+        uses: peter-evans/create-pull-request@v7.0.8
+        with:
+          commit-message: "Update Node packages"
+          branch: update-node-packages
+          title: "Update Node packages"
+          body: "This PR updates the Node.js packages to their latest versions."
+
+      - name: Auto Merge Pull Request
+        if: steps.check_changes.outputs.changes == 'true'
+        uses: pascalgn/automerge-action@v0.16.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

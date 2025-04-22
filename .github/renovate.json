@@ -1,0 +1,37 @@
+{
+  "autodiscover": false,
+  "automerge": true,
+  "baseBranches": [
+    "main"
+  ],
+  "commitMessagePrefix": "chore(deps): ",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard"
+  ],
+  "labels": [
+    "automated"
+  ],
+  "major": {
+    "automerge": true
+  },
+  "minor": {
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "automerge": true,
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ]
+    }
+  ],
+  "patch": {
+    "automerge": true
+  },
+  "prConcurrentLimit": 3
+}

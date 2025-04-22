@@ -1,0 +1,75 @@
+name: Renovate
+
+on:
+  workflow_dispatch:
+    inputs:
+      repoCache:
+        description: "Reset or disable the cache?"
+        type: choice
+        default: enabled
+        options:
+          - enabled
+          - disabled
+          - reset
+  schedule:
+    - cron: "0 5 * * 1"
+
+env:
+  cache_archive: renovate_cache.tar.gz
+  cache_dir: /tmp/renovate/cache/renovate/${{ github.repository }}
+  cache_key: renovate-cache
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Download cache archive
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          name: ${{ env.cache_key }}
+          path: cache-download
+          workflow_conclusion: success
+          if_no_artifact_found: ignore # Continue if no artifact is found
+
+      - name: Extract cache
+        if: github.event.inputs.repoCache != 'disabled'
+        run: |
+          set -x
+          if [ ! -d cache-download ]; then
+            echo "No cache found."
+            exit 0
+          fi
+          # Check if archive exists and is non-empty
+          if [ ! -s "cache-download/$cache_archive" ]; then
+            echo "Cache archive is empty or missing, skipping extraction."
+            exit 0
+          fi
+          mkdir -p "$cache_dir"
+          tar -xzf "cache-download/$cache_archive" -C "$cache_dir"
+
+      - uses: renovatebot/github-action@v41.0.20
+        with:
+          configurationFile: .github/renovate.json
+          token: ${{ secrets.RENOVATE_TOKEN }}
+          # renovate-version: v40.3.4
+        env:
+          RENOVATE_REPOSITORY_CACHE: ${{ github.event.inputs.repoCache || 'enabled' }}
+
+      - name: Compress renovate cache
+        if: github.event.inputs.repoCache != 'disabled'
+        run: |
+          set -x
+          if [ -d "$cache_dir" ]; then
+            ls "$cache_dir"
+            tar -czvf "$cache_archive" -C "$cache_dir" .
+          else
+            echo "Cache directory does not exist."
+          fi
+
+      - uses: actions/upload-artifact@v4.6.2
+        if: github.event.inputs.repoCache != 'disabled'
+        with:
+          name: ${{ env.cache_key }}
+          path: ${{ env.cache_archive }}

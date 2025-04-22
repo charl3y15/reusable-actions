@@ -1,0 +1,19 @@
+name: Auto-merge Action Version Updates
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.title == 'Update GitHub Action Versions'
+    steps:
+      - name: Enable auto-merge
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}

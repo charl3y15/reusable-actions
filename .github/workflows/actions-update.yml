@@ -1,0 +1,36 @@
+name: GitHub Actions Version Updater
+
+on:
+  # Can be used to run the workflow manually
+  workflow_dispatch:
+  schedule:
+    # Automatically run every Sunday
+    - cron: "0 0 * * 0"
+
+permissions:
+  actions: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      # Set PYTHONPATH to include the src directory
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$PYTHONPATH:/github/workspace/src" >> $GITHUB_ENV
+
+      # Run GitHub Actions Version Updater
+      - name: Run GitHub Actions Version Updater
+        uses: saadmk11/github-actions-version-updater@v0.8.1
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          skip_pull_request: "false"
+          update_version_with: "release-tag"
+          release_types: "all"
+          pull_request_labels: "dependencies, automated"
+          pull_request_branch: "actions-update"

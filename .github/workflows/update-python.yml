@@ -1,0 +1,73 @@
+name: Update Pipfile and Pipfile.lock
+
+on:
+  schedule:
+    - cron: "0 0 * * 0" # Runs every Sunday at midnight UTC
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+permissions:
+  contents: write # Allows the workflow to commit and push changes
+
+jobs:
+  update_pipfile:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0 # Ensure the entire history is fetched
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5.5.0
+        with:
+          python-version: "3.x" # Specify the Python version
+
+      # Step 3: Cache pipenv dependencies
+      - name: Cache pipenv dependencies
+        uses: actions/cache@v4.2.3
+        with:
+          path: ~/.local/share/virtualenvs # Location of pipenv's virtual environment
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv-
+
+      # Step 4: Install Pipenv
+      - name: Install Pipenv
+        run: pip install pipenv
+
+      # Step 5: Clean virtual environment
+      - name: Clean virtual environment
+        run: pipenv --rm || true
+
+      # Step 6: Install dependencies
+      - name: Install dependencies
+        run: pipenv install
+
+      # Step 7: Update Pipfile and Pipfile.lock
+      - name: Update Pipfile and Pipfile.lock
+        run: pipenv update
+
+      # Step 8: Configure Git
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      # Step 9: Commit the changes and set an output if a commit was made
+      - name: Commit changes
+        id: commit
+        run: |
+          git add Pipfile Pipfile.lock .github/workflows/update-python.yml
+          if git commit -m "Automated update of Pipfile, Pipfile.lock, and caching in workflow"; then
+            echo "commit=true" >> $GITHUB_OUTPUT
+          else
+            echo "commit=false" >> $GITHUB_OUTPUT
+          fi
+
+      # Step 10: Push changes (only if a commit was made)
+      - name: Push changes
+        if: steps.commit.outputs.commit == 'true'
+        run: git push origin main
