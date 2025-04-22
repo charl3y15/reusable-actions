@@ -1,35 +1,17 @@
-name: Update Docker Images
+name: Docker Publish
 
 on:
-  push:
-    branches: ["main"]
-    paths:
-      - "**/*.py"
-      - "**/*.html"
-      - "package.json"
-      - "package-lock.json"
-      - "requirements.txt"
-      - "Dockerfile"
-      - "Pipfile"
-      - "Pipfile.lock"
-      - ".github/"
-      - ".github/**"
-      - ".dockerignore"
-      - "**.*.style"
-
   workflow_dispatch:
-  schedule: # 2 AM on Monday
-    - cron: "0 2 * * 1"
+  schedule:
+    - cron: "0 2 * * 1" # 2 AM on Monday
 
 permissions:
   contents: write
-  # workflows: write
   actions: write
 
 jobs:
-  build:
+  docker-publish:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.2.2
@@ -74,19 +56,7 @@ jobs:
         uses: creyD/prettier_action@v4.3
         with:
           prettier_options: "--write **/*.{json,css,html}"
-          # working_directory: '/app'
-          # same_commit: True
           github_token: ${{ secrets.GH_PAT }}
-      # # Install Black and run it
-      # - name: Install Black
-      #   run: pip install black
-
-      # - name: Run Black
-      #   run: python -m black .
-
-      # Continue with existing steps
-      - name: Set date as env variable
-        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       # Set up Docker Buildx
       - name: Set up Docker Buildx
@@ -101,7 +71,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      # Single login step using docker/login-action
+      # Login to GitHub Container Registry
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3.4.0
         with:
@@ -109,6 +79,7 @@ jobs:
           username: ${{ secrets.GH_USERNAME }}
           password: ${{ secrets.GH_PAT }}
 
+      # Build and push Docker images
       - name: Build and push Docker images
         uses: docker/build-push-action@v6.15.0
         with:

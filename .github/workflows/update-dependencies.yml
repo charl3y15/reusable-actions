@@ -1,0 +1,106 @@
+name: Update Dependencies
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0" # Runs every Sunday at midnight UTC
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      # Update GitHub Actions
+      - name: Update GitHub Actions
+        uses: saadmk11/github-actions-version-updater@v0.8.1
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          skip_pull_request: "false"
+          update_version_with: "release-tag"
+          release_types: "all"
+          pull_request_labels: "dependencies, automated"
+          pull_request_branch: "actions-update"
+
+      # Update Node.js packages
+      - name: Set up Node.js
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: "20"
+
+      - name: Cache node modules
+        uses: actions/cache@v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install npm-check-updates
+        run: npm install -g npm-check-updates
+
+      - name: Check for Node.js Updates
+        run: |
+          ncu -u
+          npm install > /dev/null 2>&1
+
+      # Update Python dependencies
+      - name: Set up Python
+        uses: actions/setup-python@v5.5.0
+        with:
+          python-version: "3.x"
+
+      - name: Cache pipenv dependencies
+        uses: actions/cache@v4.2.3
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv-
+
+      - name: Install Pipenv
+        run: pip install pipenv
+
+      - name: Update Python Dependencies
+        run: |
+          pipenv --rm || true
+          pipenv install
+          pipenv update
+
+      # Commit and push changes
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Commit changes
+        id: commit
+        run: |
+          git add .
+          if git commit -m "Automated dependency updates"; then
+            echo "commit=true" >> $GITHUB_OUTPUT
+          else
+            echo "commit=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Push changes
+        if: steps.commit.outputs.commit == 'true'
+        run: git push origin main
+
+      # Create Pull Request
+      - name: Create Pull Request
+        if: steps.commit.outputs.commit == 'true'
+        uses: peter-evans/create-pull-request@v7.0.8
+        with:
+          commit-message: "Automated dependency updates"
+          branch: dependency-updates
+          title: "Update dependencies"
+          body: "This PR updates various dependencies to their latest versions." 
