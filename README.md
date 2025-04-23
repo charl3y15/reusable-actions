@@ -44,12 +44,45 @@ jobs:
     uses: your-username/reusable-actions/.github/workflows/action-name.yml@main
 ```
 
+### Using Private Reusable Actions
+If your reusable actions repository is private, you'll need to:
+
+1. Create a Personal Access Token (PAT) with `repo` scope
+2. Add the PAT as a secret in the repository where you want to use the actions
+3. Reference the secret in your workflow file:
+
+```yaml
+jobs:
+  my-job:
+    uses: your-username/reusable-actions/.github/workflows/action-name.yml@main
+    secrets:
+      PAT: ${{ secrets.REUSABLE_ACTIONS_PAT }}
+```
+
+Then in your reusable action workflow file, add:
+
+```yaml
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  my-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ secrets.PAT }}
+```
+
 ### Required Secrets
 Make sure to set up the following secrets in your repository:
 - `GH_TOKEN` - GitHub token with appropriate permissions
 - `GH_PAT` - GitHub Personal Access Token
 - `GH_USERNAME` - Your GitHub username
 - `GH_ORG` - Your organization name (if using in org context)
+- `REUSABLE_ACTIONS_PAT` - Personal Access Token with repo scope (if using private reusable actions)
 
 ## Configuration
 
