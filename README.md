@@ -26,13 +26,30 @@ This repository contains reusable GitHub Actions that can be used across multipl
 
 ## Usage
 
-To use these actions in your repository, add the following to your workflow file:
+### For Organization Repositories
+To use these actions in your organization's repository, add the following to your workflow file:
 
 ```yaml
 jobs:
   my-job:
     uses: your-org/reusable-actions/.github/workflows/action-name.yml@main
 ```
+
+### For Personal Repositories
+To use these actions in your personal repository, add the following to your workflow file:
+
+```yaml
+jobs:
+  my-job:
+    uses: your-username/reusable-actions/.github/workflows/action-name.yml@main
+```
+
+### Required Secrets
+Make sure to set up the following secrets in your repository:
+- `GH_TOKEN` - GitHub token with appropriate permissions
+- `GH_PAT` - GitHub Personal Access Token
+- `GH_USERNAME` - Your GitHub username
+- `GH_ORG` - Your organization name (if using in org context)
 
 ## Configuration
 
@@ -44,8 +61,3 @@ Each action can be configured using inputs. See the individual action files for 
 2. Create a new branch
 3. Make your changes
 4. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License. 
-
