@@ -3,6 +3,14 @@ name: Auto Merge
 on:
   pull_request:
   workflow_dispatch:
+  workflow_call:
+    secrets:
+      GH_PAT:
+        required: true
+      GH_USERNAME:
+        required: true
+      GH_ORG:
+        required: true
 
 permissions:
   contents: write

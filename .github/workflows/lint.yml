@@ -1,5 +1,15 @@
 name: Lint Python
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_call:
+    secrets:
+      GH_PAT:
+        required: true
+      GH_USERNAME:
+        required: true
+      GH_ORG:
+        required: true
 
 jobs:
   python-black:

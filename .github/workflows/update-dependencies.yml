@@ -4,6 +4,14 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * 0" # Runs every Sunday at midnight UTC
+  workflow_call:
+    secrets:
+      GH_PAT:
+        required: true
+      GH_USERNAME:
+        required: true
+      GH_ORG:
+        required: true
 
 permissions:
   contents: write

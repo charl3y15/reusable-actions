@@ -4,6 +4,14 @@ on:
   schedule:
     - cron: "0 0 * * 1" # Runs weekly on Monday at midnight
   workflow_dispatch: # Allows manual trigger
+  workflow_call:
+    secrets:
+      GH_PAT:
+        required: true
+      GH_USERNAME:
+        required: true
+      GH_ORG:
+        required: true
 
 jobs:
   check-and-update-packages:
