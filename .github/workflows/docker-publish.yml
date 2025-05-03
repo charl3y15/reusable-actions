@@ -1,13 +1,14 @@
 name: Docker Publish
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 2 * * 1" # 2 AM on Monday
-
-permissions:
-  contents: write
-  actions: write
+  workflow_call:
+    secrets:
+      GH_PAT:
+        required: true
+      GH_USERNAME:
+        required: true
+      GH_ORG:
+        required: true
 
 jobs:
   docker-publish:
