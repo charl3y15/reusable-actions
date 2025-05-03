@@ -111,4 +111,4 @@ jobs:
           commit-message: "Automated dependency updates"
           branch: dependency-updates
           title: "Update dependencies"
-          body: "This PR updates various dependencies to their latest versions." 
+          body: "This PR updates various dependencies to their latest versions."
