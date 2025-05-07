@@ -63,13 +63,18 @@ jobs:
           username: ${{ secrets.GH_USERNAME }}
           password: ${{ secrets.GH_PAT }}
 
+      # Set lowercased repository name for Docker tag
+      - name: Lowercase repository name
+        id: repo_name_lc
+        run: echo "REPO_NAME_LC=${GITHUB_REPOSITORY##*/}" | tr '[:upper:]' '[:lower:]' >> $GITHUB_ENV
+
       - name: Build and push Docker images
         uses: docker/build-push-action@v6.16.0
         with:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO }}:latest
+            ghcr.io/${{ secrets.GH_ORG }}/${{ env.REPO_NAME_LC }}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           provenance: false
