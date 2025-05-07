@@ -9,6 +9,8 @@ on:
         required: true
       GH_ORG:
         required: true
+      GH_REPO:
+        required: true
 
 permissions:
   contents: write
