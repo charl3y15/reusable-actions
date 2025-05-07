@@ -1,22 +1,14 @@
 name: Update Docker Images
 
 on:
-  push:
-    branches: ['main']
-    paths:
-      - '**/*.js'
-      - '**/*.json'
-      - '**/*.html'
-      - '**/*.css'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'Dockerfile'
-      - '.github/workflows/docker.yml'
-      - '.dockerignore'
-      - 'entrypoint.sh'
-      - 'classes/**'
-
-  workflow_dispatch:
+  workflow_call:
+    secrets:
+      GH_PAT:
+        required: true
+      GH_USERNAME:
+        required: true
+      GH_ORG:
+        required: true
 
 permissions:
   contents: write
