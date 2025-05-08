@@ -1,4 +1,4 @@
-name: Find, Approve, and Merge Pull Requests
+name: Find, Approve, and Merge Pull Requests (Shared)
 on:
   # - push
   pull_request:
