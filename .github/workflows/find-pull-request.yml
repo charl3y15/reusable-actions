@@ -1,15 +1,25 @@
-name: Find, Approve and Merge Pull Requests
+name: Find, Approve and Merge Pull Requests (Reusable)
+
 on:
-  - push
-  - pull_request
-  - workflow_dispatch
+  workflow_call:
+    secrets:
+      GH_PAT:
+        required: true
+      GH_USERNAME:
+        required: true
+      GH_ORG:
+        required: true
+
 permissions:
-    issues: write
-    pull-requests: write
-    contents: write
+  issues: write
+  pull-requests: write
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GH_USERNAME: ${{ secrets.GH_USERNAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -17,8 +27,6 @@ jobs:
         uses: juliangruber/find-pull-request-action@v1.9.0
         id: find-pull-request
         with:
-         # base: main
-       #   author: charl3y15
           state: open
           repo: ${{ github.repository }}
           sort: created
@@ -45,4 +53,3 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ steps.find-pull-request.outputs.number }}
           method: merge
-         # repo: juliangruber/octokit-action
