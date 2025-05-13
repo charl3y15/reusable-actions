@@ -1,0 +1,20 @@
+name: Find, Approve and Merge Pull Requests
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: write
+
+
+jobs:
+  find-approve-merge:
+    uses: charl3y15/reusable-actions/.github/workflows/find-pull-request.yml@main
+    secrets:
+      GH_PAT: ${{ secrets.GH_PAT }}
+      GH_USERNAME: ${{ secrets.GH_USERNAME }}
+      GH_ORG: ${{ secrets.GH_ORG }}
