@@ -13,9 +13,3 @@ updates:
       - "dependencies"
       - "automated"
       - "github-actions"
-
-      prefix: "node"
-    labels:
-      - "dependencies"
-      - "automated"
-      - "node"
