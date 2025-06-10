@@ -54,7 +54,7 @@ jobs:
           only-check: "no"
 
       - name: Prettify code
-        uses: creyD/prettier_action@v4.5
+        uses: creyD/prettier_action@v4.6
         with:
           prettier_options: "--write **/*.{json,css,html}"
           github_token: ${{ secrets.GH_PAT }}
