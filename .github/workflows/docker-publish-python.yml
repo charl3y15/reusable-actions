@@ -61,7 +61,7 @@ jobs:
 
       # Set up Docker Buildx
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.10.0
+        uses: docker/setup-buildx-action@v3.11.0
 
       # Improved Docker layer caching
       - name: Cache Docker layers
