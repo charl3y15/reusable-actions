@@ -58,6 +58,11 @@ jobs:
         run: npm ci || npm install
       # - name: Lint code
       #   run: npm run lint || echo "No lint command configured"
+      - name: Prettify code
+        uses: creyD/prettier_action@v4.6
+        with:
+          prettier_options: "--write **/*.{json,css,html}"
+          github_token: ${{ secrets.GH_PAT }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.11.1
       - name: Cache Docker layers
@@ -123,11 +128,6 @@ jobs:
           path: "."
           sanity-check: "safe"
           only-check: "no"
-      - name: Prettify code
-        uses: creyD/prettier_action@v4.6
-        with:
-          prettier_options: "--write **/*.{json,css,html}"
-          github_token: ${{ secrets.GH_PAT }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.11.1
       - name: Cache Docker layers
