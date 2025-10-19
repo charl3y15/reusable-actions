@@ -84,7 +84,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO || github.event.repository.name }}:nodejs-latest
+            ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO || github.event.repository.name }}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           provenance: false
@@ -149,7 +149,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO || github.event.repository.name }}:python-latest
+            ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO || github.event.repository.name }}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           provenance: false
