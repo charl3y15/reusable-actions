@@ -71,7 +71,6 @@ jobs:
           username: ${{ secrets.GH_USERNAME }}
           password: ${{ secrets.GH_PAT }}
       - name: Build and push Docker images (Node.js)
-        id: build
         uses: docker/build-push-action@v6.18.0
         with:
           context: .
@@ -80,17 +79,6 @@ jobs:
             ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO || github.event.repository.name }}:latest
           provenance: false
           platforms: linux/amd64
-      
-      - name: Upload Docker Build Archive (Node.js)
-        uses: actions/upload-artifact@v4
-        if: always()
-        continue-on-error: true
-        with:
-          name: docker-build-archive-nodejs
-          path: |
-            **/*.dockerbuild
-            ${{ github.workspace }}/.dockerbuild
-          retention-days: 30
 
   build-python:
     needs: detect-files
@@ -123,7 +111,6 @@ jobs:
           username: ${{ secrets.GH_USERNAME }}
           password: ${{ secrets.GH_PAT }}
       - name: Build and push Docker images (Python)
-        id: build
         uses: docker/build-push-action@v6.18.0
         with:
           context: .
@@ -132,14 +119,3 @@ jobs:
             ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO || github.event.repository.name }}:latest
           provenance: false
           platforms: linux/amd64
-      
-      - name: Upload Docker Build Archive (Python)
-        uses: actions/upload-artifact@v4
-        if: always()
-        continue-on-error: true
-        with:
-          name: docker-build-archive-python
-          path: |
-            **/*.dockerbuild
-            ${{ github.workspace }}/.dockerbuild
-          retention-days: 30
