@@ -54,9 +54,6 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: |
-            package-lock.json
-            **/package-lock.json
       - name: Install dependencies
         run: npm ci || npm install
       # - name: Lint code
@@ -81,8 +78,8 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO || github.event.repository.name }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=nodejs
+          cache-to: type=gha,mode=max,scope=nodejs
           provenance: false
           platforms: linux/amd64
 
@@ -124,7 +121,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO || github.event.repository.name }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=python
+          cache-to: type=gha,mode=max,scope=python
           provenance: false
           platforms: linux/amd64
