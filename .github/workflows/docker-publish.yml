@@ -78,8 +78,8 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO || github.event.repository.name }}:latest
-          cache-from: type=gha,scope=nodejs
-          cache-to: type=gha,mode=max,scope=nodejs
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           provenance: false
           platforms: linux/amd64
 
@@ -121,7 +121,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO || github.event.repository.name }}:latest
-          cache-from: type=gha,scope=python
-          cache-to: type=gha,mode=max,scope=python
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           provenance: false
           platforms: linux/amd64
