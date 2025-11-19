@@ -82,7 +82,7 @@ jobs:
           platforms: linux/amd64
       
       - name: Upload Docker Build Archive (Node.js)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         continue-on-error: true
         with:
@@ -134,7 +134,7 @@ jobs:
           platforms: linux/amd64
       
       - name: Upload Docker Build Archive (Python)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         continue-on-error: true
         with:
