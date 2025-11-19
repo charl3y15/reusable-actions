@@ -80,6 +80,7 @@ jobs:
             ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO || github.event.repository.name }}:latest
           provenance: false
           platforms: linux/amd64
+          outputs: type=dockerbuild,dest=./nodejs-build.dockerbuild
       
       - name: Upload Docker Build Archive (Node.js)
         uses: actions/upload-artifact@v5
@@ -88,8 +89,8 @@ jobs:
         with:
           name: docker-build-archive-nodejs
           path: |
+            ./nodejs-build.dockerbuild
             **/*.dockerbuild
-            ${{ github.workspace }}/.dockerbuild
           retention-days: 30
 
   build-python:
@@ -132,6 +133,7 @@ jobs:
             ghcr.io/${{ secrets.GH_ORG }}/${{ secrets.GH_REPO || github.event.repository.name }}:latest
           provenance: false
           platforms: linux/amd64
+          outputs: type=dockerbuild,dest=./python-build.dockerbuild
       
       - name: Upload Docker Build Archive (Python)
         uses: actions/upload-artifact@v5
@@ -140,6 +142,6 @@ jobs:
         with:
           name: docker-build-archive-python
           path: |
+            ./python-build.dockerbuild
             **/*.dockerbuild
-            ${{ github.workspace }}/.dockerbuild
           retention-days: 30
