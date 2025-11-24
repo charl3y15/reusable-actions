@@ -57,7 +57,7 @@ jobs:
           mkdir -p "$cache_dir"
           tar -xzf "cache-download/$cache_archive" -C "$cache_dir"
 
-      - uses: renovatebot/github-action@v44.0.3
+      - uses: renovatebot/github-action@v44.0.4
         with:
           configurationFile: .github/renovate.json
           token: ${{ secrets.RENOVATE_TOKEN }}
