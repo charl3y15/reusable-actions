@@ -102,7 +102,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6.0.0
       - name: Setup Python
-        uses: actions/setup-python@v6.0.0
+        uses: actions/setup-python@v6.1.0
         with:
           python-version: "3.x"
       - name: Get pip cache dir
