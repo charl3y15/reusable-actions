@@ -31,7 +31,7 @@ jobs:
           repo: ${{ github.repository }}
           sort: created
           direction: desc
-          labels: automated
+          # labels: automated
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "Pull Request ${{ steps.find-pull-request.outputs.number }} (${{ steps.find-pull-request.outputs.head-sha }})"
         env:
