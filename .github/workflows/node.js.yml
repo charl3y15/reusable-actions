@@ -64,7 +64,7 @@ jobs:
 
       - name: Create Pull Request
         if: steps.check_changes.outputs.changes == 'true'
-        uses: peter-evans/create-pull-request@v7.0.11
+        uses: peter-evans/create-pull-request@v8.0.0
         with:
           commit-message: "Update Node packages"
           branch: update-node-packages
