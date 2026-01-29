@@ -27,7 +27,7 @@ jobs:
           node-version: "24" # Specify the Node.js version
 
       - name: Cache node modules
-        uses: actions/cache@v5.0.2
+        uses: actions/cache@v5.0.3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
