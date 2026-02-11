@@ -79,7 +79,7 @@ jobs:
           username: ${{ secrets.GH_USERNAME }}
           password: ${{ secrets.GH_PAT }}
       - name: Build and push Docker images (Node.js)
-        uses: docker/build-push-action@v6.18.0
+        uses: docker/build-push-action@v6.19.0
         with:
           context: .
           push: true
@@ -144,7 +144,7 @@ jobs:
           username: ${{ secrets.GH_USERNAME }}
           password: ${{ secrets.GH_PAT }}
       - name: Build and push Docker images (Python)
-        uses: docker/build-push-action@v6.18.0
+        uses: docker/build-push-action@v6.19.0
         with:
           context: .
           push: true
