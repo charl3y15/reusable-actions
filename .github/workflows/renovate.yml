@@ -76,7 +76,7 @@ jobs:
             echo "Cache directory does not exist."
           fi
 
-      - uses: actions/upload-artifact@v6.0.0
+      - uses: actions/upload-artifact@v7.0.0
         if: github.event.inputs.repoCache != 'disabled'
         with:
           name: ${{ env.cache_key }}
