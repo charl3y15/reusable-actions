@@ -97,16 +97,16 @@ jobs:
           check-latest: true
 
       # Cache npm dependencies
-      - name: Cache npm dependencies
-        uses: actions/cache@v4.2.0  # Ensure you use the latest version of cache action
-        id: npm-cache
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+#      - name: Cache npm dependencies
+#        uses: actions/cache@v4.2.0  # Ensure you use the latest version of cache action
+#        id: npm-cache
+#        with:
+#          path: |
+#            ~/.npm
+#            node_modules
+#          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#          restore-keys: |
+#            ${{ runner.os }}-node-
 
       # Install Prettier and run it
       - name: Install Prettier
@@ -122,14 +122,14 @@ jobs:
           python-version: "3.x"
 
       # Cache pip dependencies
-      - name: Cache pip dependencies
-        uses: actions/cache@v4.2.0  # Ensure you use the latest version of cache action
-        id: pip-cache
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+#      - name: Cache pip dependencies
+#        uses: actions/cache@v4.2.0  # Ensure you use the latest version of cache action
+#        id: pip-cache
+#        with:
+#          path: ~/.cache/pip
+#          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+#          restore-keys: |
+#            ${{ runner.os }}-pip-
 
       # Python Black
       - name: Run Python Black

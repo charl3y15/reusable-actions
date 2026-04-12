@@ -34,13 +34,13 @@ jobs:
           python-version: "3.x" # Specify the Python version
 
       # Step 3: Cache pipenv dependencies
-      - name: Cache pipenv dependencies
-        uses: actions/cache@v5.0.4
-        with:
-          path: ~/.local/share/virtualenvs # Location of pipenv's virtual environment
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pipenv-
+#      - name: Cache pipenv dependencies
+#        uses: actions/cache@v5.0.4
+#        with:
+#          path: ~/.local/share/virtualenvs # Location of pipenv's virtual environment
+#          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+#          restore-keys: |
+#            ${{ runner.os }}-pipenv-
 
       # Step 4: Install Pipenv
       - name: Install Pipenv
